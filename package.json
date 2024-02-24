@@ -51,6 +51,8 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
+    "@types/yargs": "^17.0.32",
+    "commander": "^12.0.0",
     "iconv-lite": "^0.6.3",
     "inquirer": "^9.2.15",
     "open": "^10.0.3",

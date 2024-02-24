@@ -15,6 +15,8 @@ export default antfu(
       'no-console': 'off',
       'ts/ban-ts-comment': 'off',
       'node/prefer-global/process': 'off',
+      'import/no-mutable-exports': 'off',
+      'unused-imports/no-unused-vars': 'off',
     },
   },
 )

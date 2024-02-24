@@ -1,11 +1,25 @@
 #!/usr/bin/env node
+import path from 'node:path'
 import { $, chalk } from 'zx'
 import inquirer from 'inquirer'
 import iconv from 'iconv-lite'
+import open from 'open'
+import { program } from 'commander'
+import { doneBuildFn, preBuildFn } from './lifecycle'
+
+// 定义命令行参数
+program
+  .option('--config <value>', 'Set config value')
+program.parse()
+
+// 获取命令行参数中的配置文件路径
+const configValue = program.opts()
+
+console.log(configValue)
 const encoding = 'cp936'
 // 匹配如下的正则
 // 类型: Android自有证书 下载地址: https://ide.dcloud.net.cn/build/download/f2524060-1738-11ed-9bb9-813ac4138720 （注意该地址为临时下载地址，只能下载5次）
-// const regHttp = /(https:.*)（/gm
+const regHttp = /(https:.*)（/gm
 async function removeWinCliCommand() {
   if (process.platform === 'win32') {
     try {
@@ -35,10 +49,7 @@ const httpEnv = {
   测试环境: '测试环境',
 }
 main()
-function preBuild() {}
-function packDone() {
 
-}
 const inquireParams = [
   {
     type: 'list',
@@ -60,10 +71,16 @@ const inquireParams = [
   // },
 ]
 async function main() {
-  preBuild()
-  await removeWinCliCommand()
-  inquirePrompt(inquireParams)
-  packDone()
+  try {
+    await preBuildFn()
+    await removeWinCliCommand()
+    await inquirePrompt(inquireParams)
+    await startPack()
+    await doneBuildFn()
+  }
+  catch (e) {
+    console.error('pack error', e)
+  }
 }
 
 async function inquirePrompt(params: any) {
@@ -78,9 +95,11 @@ async function inquirePrompt(params: any) {
 async function startPack() {
   // const configPath = `${process.cwd()}\\build-config.json`
   // const packEnv = process.argv[3]
+  const targetPath = path.join(process.cwd(), '/build-config.json')
+  console.log(targetPath.split(path.sep).join('\\\\/').trim(), 'path--------------')
 
   // 配置项目路径文件
-  const p = $`cli.exe pack --config placeholder-token`
+  const p = $`cli.exe pack --config ${targetPath.split(path.sep).join('\\\\/').trim()}`
   for await (const chunk of p.stdout) {
     // 格式化为中文进行输出
     // @ts-expect-error
@@ -101,10 +120,17 @@ async function startPack() {
       exit()
     }
     // 正则表达式执行结果
+    const regResult = regHttp.exec(formatStdout)
+    if (regResult) {
+      const url = regResult[1]
+      doneBuildFn({ url })
+      if (url.includes('https://'))
+        open(url)
+    }
+    // 正则表达式执行结果
   }
 }
 
-startPack()
 function exit() {
   process.exit()
 }
