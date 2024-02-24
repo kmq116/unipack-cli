@@ -33,6 +33,9 @@
       ]
     }
   },
+  "bin": {
+    "unipack-cli": "./dist/index.mjs"
+  },
   "files": [
     "dist"
   ],
@@ -46,6 +49,13 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.6.3",
+    "inquirer": "^9.2.15",
+    "open": "^10.0.3",
+    "unipack-core": "^0.0.1",
+    "zx": "^7.2.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.2",

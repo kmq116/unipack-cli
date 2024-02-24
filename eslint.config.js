@@ -10,6 +10,11 @@ export default antfu(
   {
     rules: {
       // overrides
+      'no-unused-vars': 'off',
+      'node/prefer-global/buffer': 'off',
+      'no-console': 'off',
+      'ts/ban-ts-comment': 'off',
+      'node/prefer-global/process': 'off',
     },
   },
 )
