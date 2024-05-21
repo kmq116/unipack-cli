@@ -1,7 +1,7 @@
 {
-  "name": "unipack-cli",
+  "name": "@kmq116/unipack-cli",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "_description_",
   "author": "kmq116 <coderco@foxmail.com>",
   "license": "MIT",
