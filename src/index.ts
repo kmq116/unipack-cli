@@ -5,7 +5,7 @@ import inquirer from 'inquirer'
 import iconv from 'iconv-lite'
 import open from 'open'
 import { program } from 'commander'
-import { doneBuildFn, loadConfigFile, preBuildFn } from './lifecycle'
+import { doneBuildFn, loadConfigFile } from './lifecycle'
 
 // 定义命令行参数
 program
@@ -72,12 +72,14 @@ const inquireParams = [
 ]
 async function main() {
   try {
-    loadConfigFile()
-    await preBuildFn()
+    const configFileModule = await loadConfigFile()
+    console.log(configFileModule.default)
+    const { preBuild, buildDone } = configFileModule.default
+    await preBuild()
     await removeWinCliCommand()
     await inquirePrompt(inquireParams)
     await startPack()
-    await doneBuildFn()
+    await buildDone()
   }
   catch (e) {
     console.error('pack error', e)
